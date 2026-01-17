@@ -173,7 +173,7 @@
             color: var(--accent-color);
         }
 
-        .cursor-badge {
+        .data-filter {
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             padding: 5px 15px;
             border-radius: 20px;
@@ -306,6 +306,57 @@
             text-shadow: 0 0 8px var(--glow-color);
         }
 
+        .cursor-card {
+    /* Add this to your existing .cursor-card class */
+    transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+}
+
+        .filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 10px 25px;
+    background: rgba(15, 10, 30, 0.8);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    color: var(--accent-color);
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    font-size: 1rem;
+}
+
+.filter-btn:hover {
+    background: rgba(138, 43, 226, 0.2);
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.filter-btn.active {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 0 15px var(--glow-color);
+}
+
+.cursor-card {
+    /* Keep all existing styles, but add: */
+    transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+}
+
+/* For hiding/showing cards */
+.cursor-card.hidden {
+    display: none;
+}
+
+.cursor-card.visible {
+    display: block;
+}
+
         @media (max-width: 768px) {
             .cursor-templates {
                 grid-template-columns: 1fr;
@@ -334,6 +385,13 @@
             <div class="header-glow"></div>
         </header>
 
+<div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">Show All</button>
+    <button class="filter-btn" data-filter="DOT">DOT</button>
+    <button class="filter-btn" data-filter="RCL">RCL</button>
+    <button class="filter-btn" data-filter="ST">ST</button>
+</div>
+
         <div class="intro-text">
             <p>WELCOME - I WILL ADD MORE CURSORS WHEN I CAN BE BOTHERED :)</p>
         </div>
@@ -343,7 +401,7 @@
             <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Cyan Dot</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">DOT</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -394,7 +452,7 @@
             <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Default RCL</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">DOT</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -445,7 +503,7 @@
             <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Pink Dot</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">DOT</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -498,7 +556,7 @@
                         <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Yellow Dot</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">DOT</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -550,7 +608,7 @@
                                     <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">LQC Pink Dot</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">DOT</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -602,7 +660,7 @@
                                                 <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Red ST thing</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">ST</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -654,7 +712,7 @@
                                                             <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Red ST with lines</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">ST</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -704,7 +762,7 @@
                                                                         <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Small smg dot</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">DOT</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -754,7 +812,7 @@
                                                                                     <div class="cursor-card">
                 <div class="card-header">
                     <div class="cursor-name">Red small RCL</div>
-                    <div class="cursor-badge">NEW</div>
+                    <div class="data-filter">RCL</div>
                 </div>
                 
                 <div class="cursor-preview">
@@ -833,6 +891,51 @@
                 alert('Failed to copy text to clipboard');
             });
         }
+
+        // Filter functionality
+function setupFiltering() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cursorCards = document.querySelectorAll('.cursor-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            const filter = button.getAttribute('data-filter');
+            
+            // Filter cards based on badge text
+            cursorCards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 50);
+                } else {
+                    const badge = card.querySelector('.data-filter');
+                    const badgeText = badge.textContent.trim();
+                    
+                    if (badgeText === filter) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                        }, 50);
+                    } else {
+                        card.style.opacity = '0';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                }
+            });
+        });
+    });
+}
+
+// Call this function at the end of your script
+setupFiltering();
 
         // Add interactive cursor preview on card hover
         document.querySelectorAll('.cursor-card').forEach(card => {
